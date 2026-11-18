@@ -134,8 +134,9 @@ test settings, not the production training configuration.
 The framework checks use offline environment settings and block Python socket
 connections and DNS lookups; none were attempted. Jupyter's separate kernel
 test permits local sockets. This is not a whole-system network isolation test.
-No pretrained weights or private documents were used. Actual model memory
-requirements and model-specific fine-tuning compatibility remain unverified.
+No pretrained weights or private documents were used in this Phase 2 synthetic
+check. A later Qwen3.5 QLoRA run is recorded in
+`evaluation/reports/yember-training.json`.
 
 ### Launch Jupyter locally
 
@@ -173,8 +174,10 @@ have different scopes, as explained in the report.
 .venv/bin/python scripts/chat_local.py
 ```
 
-Use `/clear` to reset history or `/quit` to exit. The chat currently uses model
-knowledge and any context you type. It has no document retrieval connected.
+Use `/clear` to reset history or `/quit` to exit. The chat retrieves a relevant
+answer from the curated Yember FAQ in `docs/train.jsonl` and adds it to the
+prompt. It falls back when the FAQ does not cover the question. This is a small
+keyword retriever, not the planned general document ingestion/vector search.
 Responses are capped at 128 new tokens; chat input is capped at 768 tokens.
 
 See [model selection and measured limits](model-selection.md),
@@ -188,8 +191,10 @@ Re-run verification with:
 
 No fallback model or GGUF copy was downloaded. No new Python packages were
 needed for the initial Phase 3 baseline. Native causal-convolution acceleration
-was subsequently installed and verified as described below. Model-specific
-BF16 LoRA training fit remains to be measured in Phase 5.
+was subsequently installed and verified as described below. The Yember FAQ
+retriever and QLoRA adapter were added later. Qwen3.5 training completed and
+the adapter loaded in local chat; the 15-example validation loss is not a
+broad quality evaluation. See `evaluation/reports/yember-training.json`.
 
 ### Causal-convolution fallback messages
 
@@ -230,8 +235,11 @@ To activate it, enter `/quit` in the current chat and restart:
 
 ## Next phase
 
-Phase 4 will implement document ingestion, local embeddings, Chroma indexing,
-updates/deletion, duplicate detection, retrieval, and source metadata.
+The first Phase 4 slice now retrieves from the curated FAQ. Full document
+ingestion, local embeddings, Chroma indexing, updates/deletion, duplicate
+detection, and document-level source metadata remain future work. Run
+`scripts/verify_yember_data.py` before editing the FAQ. To retrain the adapter,
+see the command in the root README. The first Qwen3.5 run completed on CUDA.
 
 References: [PyTorch installation](https://pytorch.org/get-started/locally/),
 [Unsloth Core installation](https://unsloth.ai/docs/get-started/install/pip-install),

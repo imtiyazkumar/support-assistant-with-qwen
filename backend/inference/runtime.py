@@ -120,6 +120,15 @@ class LocalModel:
             raise RuntimeError("Unexpected CPU or disk offload")
         if self.model.config.model_type != "qwen3_5_text":
             raise RuntimeError("Expected the text-only Qwen3.5 model")
+        adapter_path = ROOT / "models/adapters/yember-support"
+        if adapter_path.is_dir():
+            from peft import PeftModel
+
+            self.model = PeftModel.from_pretrained(
+                self.model, adapter_path, is_trainable=False
+            )
+            self.model.eval()
+            LOGGER.info("Loaded Yember support adapter from %s", adapter_path)
 
     def memory(self) -> dict[str, float]:
         torch = self.torch
@@ -198,6 +207,7 @@ class LocalModel:
                 do_sample=False,
                 use_cache=True,
                 pad_token_id=self.tokenizer.pad_token_id,
+                eos_token_id=self.tokenizer.eos_token_id,
                 streamer=timer,
             )
         torch.cuda.synchronize()

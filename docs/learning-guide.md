@@ -20,9 +20,12 @@ replacement for a searchable, updateable document store. Uploading a document
 does not automatically train the model.
 
 **Current state:** environment, model inference, and native acceleration are
-tested. Document retrieval is planned for Phase 4. Actual Qwen fine-tuning is
-planned for Phase 5; the completed training test used a tiny random model.
-The professional web interface is planned for Phase 6.
+tested. A small keyword retriever now grounds chat in `docs/train.jsonl`; full
+document ingestion and vector search remain planned for Phase 4. A QLoRA
+adapter has been trained on the FAQ and loaded in local chat. Its held-out
+loss is recorded in `evaluation/reports/yember-training.json`; 15 validation
+examples are too few to establish broad answer quality. The professional web
+interface is planned for Phase 6.
 
 ## 2. Python and development environment
 
@@ -221,6 +224,11 @@ This explains why “weights fit” and “training fits” are different tests.
 
 ## 7. RAG and document knowledge — Phase 4
 
+The chat currently searches the curated FAQ by weighted keyword overlap and
+adds one matching question and answer to the prompt. Full PDF/DOCX ingestion,
+embeddings, Chroma storage, and document citations described below are still
+planned.
+
 | Term | Meaning and planned use |
 | --- | --- |
 | Knowledge base | The document collection and searchable data derived from it. |
@@ -402,7 +410,8 @@ running process; `/clear` removes that conversational context.
 
 ## 12. Process flow B: document ingestion and RAG
 
-These are planned flows, not features already connected to the chat.
+General document ingestion is planned. The chat already has a smaller FAQ
+retrieval path; it does not yet implement the embedding and Chroma flows below.
 
 ```mermaid
 flowchart LR

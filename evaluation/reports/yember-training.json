@@ -1,0 +1,22 @@
+{
+  "status": "completed",
+  "base_model": "Qwen/Qwen3.5-2B",
+  "adapter": "models/adapters/yember-support",
+  "method": "QLoRA with 4-bit NF4 base weights and BF16 compute",
+  "dataset": "docs/train.jsonl",
+  "dataset_records": 149,
+  "train_examples": 134,
+  "validation_examples": 15,
+  "epochs": 3,
+  "global_steps": 51,
+  "training_loss": 1.535,
+  "evaluation_loss": 0.9833,
+  "training_runtime_seconds": 463.2,
+  "adapter_size_bytes": 16869120,
+  "adapter_load_smoke": "passed",
+  "support_answer_smoke": "passed",
+  "limitations": [
+    "Validation loss is based on only 15 examples and does not establish broad customer-support accuracy.",
+    "Product facts in the dataset were not checked against Yember application source in this workspace."
+  ]
+}
